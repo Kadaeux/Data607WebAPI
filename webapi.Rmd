@@ -1,0 +1,46 @@
+---
+title: "DATA607 - Web API"
+author: "Nicholas Kunze"
+date: "2024-03-31"
+output:
+  html_document:
+    highlight: pygments
+    theme: cerulean
+    toc: true
+    toc_float: true
+  pdf_document: default
+editor_options: 
+  chunk_output_type: console
+params:
+  key: "9nfmnivLAXo5vqHyhoeuGduG3cGS6BLl"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+if("RCurl" %in% rownames(installed.packages()) == FALSE) {install.packages("RCurl")}
+library(RCurl)
+if("jsonlite" %in% rownames(installed.packages()) == FALSE) {install.packages("jsonlite")}
+library(jsonlite)
+if("tidyverse" %in% rownames(installed.packages()) == FALSE) {install.packages("tidyverse")}
+library(tidyverse)
+```
+
+## Overview
+
+This assignment illustrates the ability to get and process data from REST APIs, which usually use JSON format for the payload/body.
+
+## NYT HTTP GET
+
+I've signed up on the dev NYT website and obtained an API key, which im storing in my parameter variables. Now I can make an HTTP GET request to access the data,
+
+```{r api-get}
+electionArticles <- fromJSON(paste0("https://api.nytimes.com/svc/search/v2/articlesearch.json?q=election&api-key=",params$key))
+articlesdf <- as.data.frame(electionArticles)
+class(articlesdf)
+```
+
+There appear to be nested dataframes as well, such as the headlines.
+
+```{r nested-df}
+head(articlesdf$response.docs.headline$main)
+```
